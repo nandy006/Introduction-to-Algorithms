@@ -2,6 +2,9 @@ Chapter 2
 ================
 Abhishek Nandy
 
+Section 2.1
+===========
+
 Insertion sort
 --------------
 
@@ -86,10 +89,148 @@ void insertion_sort( int* arr, int size ){
  
 ```
 
+Exercise 2.1
+============
+
+2.1.4
+-----
+
+Here's a c code that adds two binary numbers. The function "random\_bin\_array" generates a random binary sequence and the function "add\_binary" adds two binary sequences.
+
+``` rcpp
+#include <stdio.h>
+#include <stdlib.h>
+
+#define LENGTH 20
+#define MAX_LENGTH 10000
+
+int * random_bin_array(int length);
+int * add_binary( int* arr1, int* arr2 , int length);
+void main(){
+    int *A1, *A2, *sum, i;
+    A1 = random_bin_array( LENGTH );
+    A2 = random_bin_array( LENGTH );
+    sum = add_binary( A1, A2, LENGTH );
+
+    printf("  ");
+    for( i = 0; i < LENGTH; ++i ){
+        printf("%d ", *(A1 + i));
+    }   
+    printf("\n");
+
+    printf("  ");
+    for( i = 0; i < LENGTH; ++i ){
+        printf("%d ", *(A2 + i));
+    }   
+    printf("\n");
+
+    for( i = 0; i <= LENGTH; ++i ){
+        printf("%d ", *(sum + i));
+    }   
+    printf("\n");
+
+
+}
+
+int * random_bin_array(int length){
+
+int *arr = malloc( MAX_LENGTH*sizeof(int) );
+int i;
+arr[ 0 ] = 1;
+for( i = 1; i < length; ++i){
+    
+    *(arr + i ) = rand() % 2;
+    }
+
+return arr;
+
+}
+
+int* add_binary( int* arr1, int* arr2 , int length){
+
+    int *arr = malloc( MAX_LENGTH*sizeof(int) );
+    int i, carry;
+    carry = 0;
+    for( i = length; i >= 0; --i ){
+            
+        *(arr + i + 1 ) = (*(arr1 + i) + *(arr2 + i) + carry)%2; 
+        carry = (*(arr1 + i) + *(arr2 + i) + carry)/2;
+        }
+    *arr = carry;
+    return arr;
+    
+
+}
+```
+
+Exercise 2.2
+============
+
+2.2.2
+-----
+
+``` rcpp
+#include <stdio.h>
+
+void selection_sort( int* arr, int length );
+
+void main(){
+
+int i;
+int A[11] = {4, 5, 6, 1, 2, 3, 9, 8, 15, 13, 14};
+
+for( i = 0; i < 11; ++i)
+
+                printf("%d ", *(A + i));
+                printf("\n");
+selection_sort( A, 11);
+
+for( i = 0; i < 11; ++i)
+
+                printf("%d ", *(A + i));
+                printf("\n");
+
+}
+
+
+void selection_sort( int* arr, int length ){
+
+int i, j, key, index;
+
+for( i = 0; i < length - 1; ++i ){
+
+                key = *(arr + i);
+                j = i + 1;
+                index = 0;
+
+                while( j < length){
+
+                                if( *(arr + j) < key ){
+
+                                                key = *(arr + j);
+                                                index = j;
+                                                }
+                                ++j;       
+                                }
+
+                if( index == 0 )
+                                ;
+                else{
+                *(arr + index) = *(arr + i);
+                *(arr + i) = key;
+                                }
+                }
+
+}
+```
+
+Section 2.3
+===========
+
 Merge sort
 ----------
 
-There are two functions here. The function "merge\_fn" merges two sorted subarray, while preserving order. The function "merge\_sort" recursive calls itself to sort subarrays and then merges the sorted subarrays using the "merge\_fn" function. In main we create an array and sort it using the function "merge\_sort". We restrict all our computations to int to keep things simple.
+There are two functions here. The function "merge\_fn" merges two sorted subarray, while preserving order. The function "merge\_sort" recursively calls itself to sort subarrays and then merges the sorted subarrays using the "merge\_fn" function. In main we create an array and sort it using the function "merge\_sort". We restrict all our computations to int to keep things simple.
 
 ``` rcpp
 #include <stdio.h>
@@ -165,5 +306,209 @@ void merge_sort( int* A, int p, int r ){
 
                 }
 
+}
+```
+
+Exercise 2.3
+============
+
+2.3.4
+-----
+
+``` rcpp
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_LENGTH 10000
+
+void insert(int* array, int length, int key);
+void sort(int* array, int n);
+
+void main(){
+
+
+int *arr = (int*) malloc( MAX_LENGTH*sizeof(int) );
+
+int i;
+
+int A[11] = {4, 5, 6, 1, 2, 3, 9, 8, 15, 13, 14};
+
+for( i = 0; i < 11; ++i){
+        
+        *(arr + i) = *(A + i);
+                printf("%d ", *(arr + i));
+    }
+                printf("\n");
+
+sort( arr, 11);
+
+for( i = 0; i < 11; ++i)
+
+                printf("%d ", *(arr + i));
+
+                printf("\n");
+
+ 
+
+
+}
+
+void insert(int* array, int length, int key){
+
+int i = length -1;
+while( i >= 0 && *(array + i) > key ){
+    *(array + i + 1) = *(array + i);
+    --i;
+
+}
+*(array + i + 1) = key;
+
+}
+
+
+void sort(int* array, int n){
+
+    if( n > 0 ){
+    sort(array, n-1);
+    insert(array, n-1, *(array + n - 1));
+    }
+
+}
+```
+
+2.3.5
+-----
+
+### Iterative binary search
+
+``` rcpp
+#include <stdio.h>
+
+#include <stdlib.h>
+
+#define MAX_LENGTH 10
+
+#define KEY 3
+
+int binary_search( int *sorted_array, int search_for, int array_length );
+
+ 
+
+void main(){
+
+int i;
+
+int outcome;
+
+int sorted_array[ MAX_LENGTH ];
+
+                for( i = 0; i < MAX_LENGTH; ++i ){
+
+                sorted_array[ i ] = 2 * i;
+
+}
+
+                outcome = binary_search(sorted_array, KEY, MAX_LENGTH);
+
+                printf("The key: %d is in location %d\n", KEY, outcome);
+
+ 
+
+}
+
+ 
+
+int binary_search( int* sorted_array, int search_for, int array_length ){
+
+ 
+
+                int low = 0;
+
+                int high = array_length - 1;
+
+                int mid;
+
+                while( high >= low ){
+
+                                mid = (high + low)/2 ;
+
+                                if( *( sorted_array + mid ) == search_for ){
+
+                                return mid;
+
+                                }else if( *( sorted_array + mid ) > search_for ){
+
+                                high = mid - 1;
+
+                                }else if( *( sorted_array + mid ) < search_for ){
+
+                                low = mid + 1;
+
+                                }
+
+                }
+
+                return -1;
+
+}
+```
+
+### Recursive binary search
+
+``` rcpp
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_LENGTH 10
+#define KEY 2
+
+int binary_search( int *sorted_arr, int search_for, int low, int high );
+
+void main(){
+
+int i;
+
+int outcome;
+
+int sorted_array[ MAX_LENGTH ];
+
+                for( i = 0; i < MAX_LENGTH; ++i ){
+
+                sorted_array[ i ] = 2 * i;
+        printf("%d ", sorted_array[ i ]);
+
+}
+    printf("\n");
+
+                outcome = binary_search(sorted_array, KEY, 0, MAX_LENGTH - 1);
+
+                printf("The key: %d is in location %d\n", KEY, outcome);
+
+ 
+
+}
+
+
+int binary_search( int *sorted_arr, int search_for, int low, int high ){
+
+int mid;
+if( high >= low ){
+
+mid = (low + high)/2;
+
+if( *(sorted_arr + mid) == search_for ){
+    return mid;
+    }
+else if(*(sorted_arr + mid) > search_for){
+    high = mid - 1;
+    return binary_search(sorted_arr, search_for, low, high);
+    }
+else{
+    low = mid + 1;
+    return binary_search(sorted_arr, search_for, low, high);
+    }
+
+}
+return -1;
 }
 ```
