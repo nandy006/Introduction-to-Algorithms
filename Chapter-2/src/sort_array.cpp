@@ -25,10 +25,21 @@ template<class Type>
 void HeapSort(Type**, int);
 
 template<class Type>
+void Merge(Type**, int, int, int);
+
+template<class Type>
+void MergeSort(Type**, int, int);
+
+template<class Type>
 class Array{
     private:
     int length;
-    Type** ptrarr;
+    Type** ptrarr; 
+/* 
+Since the array to be sorted could have any data type
+including possibly very large objects we always sort 
+the pointers not the objects themselves
+*/
 
     public:
         int size() const;
@@ -38,6 +49,7 @@ class Array{
         void insertion_sort();
         void quick_sort();
         void heap_sort();
+        void merge_sort();
 };
 
 template<class Type>
@@ -86,6 +98,27 @@ void Array<Type>::insertion_sort(){
 }
 
 template<class Type>
+void Array<Type>::quick_sort(){
+    QuickSort(ptrarr, 0, length - 1);
+}
+
+
+template<class Type>
+void Array<Type>::heap_sort(){
+    HeapSort(ptrarr, length);
+}
+
+template<class Type>
+void Array<Type>::merge_sort(){
+    MergeSort(ptrarr, 0, length - 1);
+}
+
+
+/*
+functions for Quick Sort
+*/
+
+template<class Type>
 int partition(Type**ptrptr, int low, int high){
     Type pivot = **(ptrptr + high);
     Type* temp;
@@ -115,16 +148,10 @@ void QuickSort(Type** ptrptr, int low, int high){
     
 }
 
-template<class Type>
-void Array<Type>::quick_sort(){
-    QuickSort(ptrarr, 0, length - 1);
-}
+/*
+Functions for heap sort
+*/
 
-
-template<class Type>
-void Array<Type>::heap_sort(){
-    HeapSort(ptrarr, length);
-}
 template<class Type>
 void MaxHeapify(Type** ptrptr, int index, int heapsize){
     int left_child = 2*index + 1, right_child = 2*(index + 1), largest;
@@ -163,12 +190,65 @@ void HeapSort(Type** ptrptr, int heapsize){
     }
 }
 
+
+/*
+functions for merge sort
+*/
+
+template<class Type>
+void MergeSort(Type** ptrptr, int low, int high){
+    if(high > low){
+        int mid = (low + high)/2;
+        MergeSort(ptrptr, low, mid);
+        MergeSort(ptrptr, mid+1, high);
+        Merge(ptrptr, low, mid, high);
+    }
+}
+
+template<class Type>
+void Merge(Type** ptrptr, int low, int mid, int high){
+    Type** leftarr, ** rightarr;
+    leftarr = new Type*[mid - low + 1];
+    rightarr = new Type*[high - mid];
+
+    for(int i=0; i <= mid - low; i++)
+        *(leftarr + i) = *(ptrptr + low + i);
+
+    for(int i=0; i < high - mid; i++)
+        *(rightarr + i) = *(ptrptr + mid + 1 + i);
+
+    int i = low, j = 0, k=0;
+
+    while(j <= mid - low && k < high - mid ){
+        if(**(leftarr + j) < **(rightarr + k) ){
+            *(ptrptr + i++) = *(leftarr + j++);
+        }
+        else{
+            *(ptrptr + i++) = *(rightarr + k++);
+        }
+    }
+
+    if(j > mid - low){
+        while(i <= high)
+            *(ptrptr + i++) = *(rightarr + k++);
+    }
+
+    if(k >= high - mid){
+        while(i <= high)
+            *(ptrptr + i++) = *(leftarr + j++);
+    }
+
+    delete[] leftarr;
+    delete[] rightarr;    
+}
+
+
 int main(){
-    Array<double> intarray;
-    cin >> intarray;
-    cout << intarray;
-    intarray.heap_sort();
-    cout << intarray;
+    Array<double> myarray;
+    cin >> myarray;
+    cout << myarray;
+    myarray.merge_sort();
+    cout << myarray;
     return 0;
 }
 
