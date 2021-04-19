@@ -31,6 +31,21 @@ template<class Type>
 void MergeSort(Type**, int, int);
 
 template<class Type>
+void InsertionSortRecursive(Type**, int);
+
+template<class Type>
+void Insert(Type**, int);
+
+template<class Type>
+int BinarySearch(Type**, int, int, Type);
+
+template<class Type>
+struct which_values{
+    Type low;
+    Type high;
+};
+
+template<class Type>
 class Array{
     private:
     int length;
@@ -50,6 +65,9 @@ the pointers not the objects themselves
         void quick_sort();
         void heap_sort();
         void merge_sort();
+        void insertion_sort_recursive();
+        int binary_search(Type);
+        which_values<Type> two_sum(Type);
 };
 
 template<class Type>
@@ -243,12 +261,83 @@ void Merge(Type** ptrptr, int low, int mid, int high){
 }
 
 
+/*
+functions for recursive insertion sort
+*/
+template<class Type>
+void Array<Type>::insertion_sort_recursive(){
+    InsertionSortRecursive(ptrarr, length-1);
+}
+
+template<class Type>
+void InsertionSortRecursive(Type** ptrptr, int n){
+    if(n >= 1){
+        InsertionSortRecursive(ptrptr, n-1);
+        Insert(ptrptr, n);
+    }
+}
+
+template<class Type>
+void Insert(Type** ptrptr, int n){
+    Type* keyptr = *(ptrptr + n);
+    int i = n-1;
+    while(i >= 0 && **(ptrptr + i) > *keyptr){
+        *(ptrptr + i + 1) = *(ptrptr + i);
+        i--;
+    }
+    *(ptrptr + i + 1) = keyptr;
+}
+
+/*
+functions for binary search
+*/
+
+template<class Type>
+int Array<Type>::binary_search(Type key){
+    Array<Type>::merge_sort();
+    return BinarySearch(ptrarr, 0, length-1, key);
+}
+
+template<class Type>
+int BinarySearch(Type** ptrptr, int low, int high, Type key){
+    if(high >= low){
+        int mid = (low + high)/2;
+        if(**(ptrptr + mid) == key)
+            return mid;
+        else if(**(ptrptr + mid) > key)
+            return BinarySearch(ptrptr, low, mid-1, key);
+        else
+            return BinarySearch(ptrptr, mid+1, high, key);
+    }
+    return -1;
+}
+
+/*
+function for two sum
+right now it only shows one of many possible matches
+we'll modify this later
+*/
+
+template<class Type>
+which_values<Type> Array<Type>::two_sum(Type sum_val){
+    Array<Type>::merge_sort();
+    for(int i =length-1; i > 0; i--){
+        Type key = sum_val - **(ptrarr + i);
+        int found = BinarySearch(ptrarr, 0, i-1, key);
+        if(found != -1)
+            return {**(ptrarr + found), **(ptrarr + i)};
+    }
+    return {-1, -1};
+}
+
 int main(){
     Array<double> myarray;
     cin >> myarray;
     cout << myarray;
-    myarray.merge_sort();
-    cout << myarray;
+    which_values<double> matches = myarray.two_sum(11);
+    // int location = myarray.binary_search(1.5);
+    cout << "The numbers that sum to " << 11 
+    << " are (" << matches.low <<", " << matches.high << ")" << endl;
     return 0;
 }
 
