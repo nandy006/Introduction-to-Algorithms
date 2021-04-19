@@ -3,3 +3,4 @@
 readme_files
 .Rhistory
 *.out
+.vscode*
