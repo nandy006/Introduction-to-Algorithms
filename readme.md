@@ -1,4 +1,4 @@
-Solutions to some problems from the book Introduction to Algorithms and some pseudo-codes translated to C
+Solutions to some problems from the book Introduction to Algorithms with pseudo-codes translated to C++
 ================
 Abhishek Nandy
 
